@@ -4,7 +4,6 @@ from datetime import datetime
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from database import Database
 from utils.notifications import NotificationManager
 
 # Initialize database and notification manager
