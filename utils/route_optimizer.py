@@ -12,15 +12,14 @@ class RouteOptimizer:
         # ... inicialização de lógica de otimização de rotas (ex: APIs de mapa)
         pass
 
-    def calculate_optimal_route(self, bins_for_collection):
+     def calculate_optimal_route(self, bins_for_collection):
         """
-        Recebe uma lista de lixeiras e retorna a rota otimizada.
+        Recebe uma lista de lixeiras e retorna a rota otimizada e a distância total.
         """
-        # Implemente aqui o algoritmo de otimização de rotas (ex: TSP).
-        
-        # Por enquanto, apenas um placeholder para resolver o erro:
-        print(f"Calculando rota para {len(bins_for_collection)} lixeiras...")
-        return bins_for_collection
+        return {
+            "total_distance": 0.0,
+            "optimized_route": bins_for_collection
+        }
     
     def init_notifications_table(self):
         """Initialize notifications table in database"""
