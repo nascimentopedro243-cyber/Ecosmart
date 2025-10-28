@@ -1,11 +1,8 @@
 import streamlit as st
 import pandas as pd
-import json
 import time
 from datetime import datetime, timedelta
-import requests
 import plotly.express as px
-import plotly.graph_objects as go
 from data.database import Database
 
 # Page config
