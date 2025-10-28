@@ -130,7 +130,7 @@ with col_right:
 
 # Detailed bins table
 st.markdown("---")
-st.subheader("📋 Lista Detalhada de Lixeiras")
+st.subheader("")
 
 # Filter bins based on selection
 filtered_bins = bins_data
@@ -160,7 +160,7 @@ if bins_table_data:
 
 # Route optimization section
 st.markdown("---")
-st.subheader("🚛 Otimização de Rotas")
+st.subheader("")
 
 col_route1, col_route2 = st.columns([1, 1])
 
