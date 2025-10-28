@@ -85,15 +85,15 @@ with col_summary4:
 if report_type in ["Completo", "Ambiental"]:
     st.markdown("---")
     st.subheader("🌍 Indicadores Ambientais")
-    
+
     col_env1, col_env2 = st.columns(2)
-    
+
     with col_env1:
         # Waste composition chart
         waste_types = ['Reciclável', 'Orgânico', 'Comum', 'Eletrônico']
         waste_amounts = [esg_data['recyclable'], esg_data['organic'], 
                         esg_data['common'], esg_data['electronic']]
-        
+
         fig_waste = px.pie(
             values=waste_amounts,
             names=waste_types,
@@ -107,13 +107,13 @@ if report_type in ["Completo", "Ambiental"]:
         )
         fig_waste.update_traces(textposition='inside', textinfo='percent+label')
         st.plotly_chart(fig_waste, use_container_width=True)
-    
+
     with col_env2:
         # Monthly recycling trend
         months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
                  'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
         recycling_trend = esg_data['monthly_recycling']
-        
+
         fig_trend = px.bar(
             x=months,
             y=recycling_trend,
@@ -123,10 +123,10 @@ if report_type in ["Completo", "Ambiental"]:
         )
         fig_trend.update_layout(showlegend=False)
         st.plotly_chart(fig_trend, use_container_width=True)
-    
+
     # Environmental KPIs table
     st.markdown("### 🌱 Indicadores de Sustentabilidade")
-    
+
     env_kpis = pd.DataFrame({
         'Indicador': [
             'Taxa de Reciclagem (%)',
@@ -163,21 +163,21 @@ if report_type in ["Completo", "Ambiental"]:
             "✅" if esg_data['avg_collection_time'] <= 45 else "⚠️"
         ]
     })
-    
+
     st.dataframe(env_kpis, use_container_width=True, hide_index=True)
 
 # Social Section
 if report_type in ["Completo", "Social"]:
     st.markdown("---")
     st.subheader("👥 Indicadores Sociais")
-    
+
     col_social1, col_social2 = st.columns(2)
-    
+
     with col_social1:
         # User engagement by region
         regions = ['Centro', 'Norte', 'Sul', 'Leste', 'Oeste']
         engagement = esg_data['regional_engagement']
-        
+
         fig_engagement = px.bar(
             x=regions,
             y=engagement,
@@ -187,7 +187,7 @@ if report_type in ["Completo", "Social"]:
             labels={'x': 'Região', 'y': 'Usuários Ativos'}
         )
         st.plotly_chart(fig_engagement, use_container_width=True)
-    
+
     with col_social2:
         # Education and awareness metrics
         education_metrics = {
@@ -196,14 +196,14 @@ if report_type in ["Completo", "Social"]:
             'Material Educativo Distribuído': esg_data['materials_distributed'],
             'Campanhas de Conscientização': esg_data['awareness_campaigns']
         }
-        
+
         st.markdown("### 📚 Educação e Conscientização")
         for metric, value in education_metrics.items():
             st.metric(metric, value)
-    
+
     # Social impact table
     st.markdown("### 🤝 Impacto Social")
-    
+
     social_impact = pd.DataFrame({
         'Aspecto Social': [
             'Geração de Empregos Diretos',
@@ -236,47 +236,47 @@ if report_type in ["Completo", "Social"]:
             "Engajamento cidadão"
         ]
     })
-    
+
     st.dataframe(social_impact, use_container_width=True, hide_index=True)
 
 # Governance Section  
 if report_type in ["Completo", "Governança"]:
     st.markdown("---")
     st.subheader("🏛️ Indicadores de Governança")
-    
+
     col_gov1, col_gov2 = st.columns(2)
-    
+
     with col_gov1:
         # Compliance metrics
         st.markdown("### ⚖️ Conformidade e Compliance")
-        
+
         compliance_data = {
             'Licenças Ambientais': {'status': 'Válidas', 'count': esg_data['env_licenses']},
             'Auditorias Realizadas': {'status': 'Completas', 'count': esg_data['audits']},
             'Não Conformidades': {'status': 'Resolvidas', 'count': esg_data['non_conformities']},
             'Treinamentos Compliance': {'status': 'Realizados', 'count': esg_data['compliance_training']},
         }
-        
+
         for item, data in compliance_data.items():
             st.markdown(f"**{item}:** {data['count']} - {data['status']}")
-    
+
     with col_gov2:
         # Financial transparency
         st.markdown("### 💰 Transparência Financeira")
-        
+
         financial_data = {
             'Investimento Total (R$)': f"R$ {esg_data['total_investment']:,.2f}",
             'Economia Operacional (R$)': f"R$ {esg_data['operational_savings']:,.2f}",
             'ROI Ambiental': f"{esg_data['environmental_roi']:.1f}%",
             'Custo por Tonelada': f"R$ {esg_data['cost_per_ton']:.2f}"
         }
-        
+
         for metric, value in financial_data.items():
             st.markdown(f"**{metric}:** {value}")
-    
+
     # Governance KPIs
     st.markdown("### 📊 KPIs de Governança")
-    
+
     governance_kpis = pd.DataFrame({
         'Área': ['Transparência', 'Compliance', 'Ética', 'Gestão de Riscos', 'Stakeholder'],
         'Indicador': [
@@ -302,7 +302,7 @@ if report_type in ["Completo", "Governança"]:
             "🟢" if esg_data['stakeholder_satisfaction'] >= 8.0 else "🟡"
         ]
     })
-    
+
     st.dataframe(governance_kpis, use_container_width=True, hide_index=True)
 
 # Comparative Analysis
@@ -325,7 +325,7 @@ with col_comp1:
         '2024': [2.3, 5.1, 247, 87, 180000],
         'Variação (%)': ['+27.8%', '+21.4%', '+37.2%', '+6.1%', '+20.0%']
     }
-    
+
     comp_df = pd.DataFrame(comparison_data)
     st.markdown("### 📊 Comparação Anual")
     st.dataframe(comp_df, use_container_width=True, hide_index=True)
@@ -335,7 +335,7 @@ with col_comp2:
     benchmark_categories = ['Reciclagem', 'Eficiência', 'Engajamento', 'Sustentabilidade']
     ecosmart_scores = [87, 85, 92, 89]
     industry_avg = [75, 78, 68, 72]
-    
+
     fig_benchmark = go.Figure()
     fig_benchmark.add_trace(go.Bar(
         name='EcoSmart',
@@ -349,13 +349,13 @@ with col_comp2:
         y=industry_avg,
         marker_color='#FFC107'
     ))
-    
+
     fig_benchmark.update_layout(
         title='Benchmark vs Média do Setor (%)',
         barmode='group',
         height=400
     )
-    
+
     st.plotly_chart(fig_benchmark, use_container_width=True)
 
 # Goals and targets
@@ -402,7 +402,7 @@ with col_export2:
             # Simulate report generation
             report_data = db.generate_esg_report(esg_data)
             st.success("✅ Relatório gerado com sucesso!")
-            
+
             # Simulate download
             report_buffer = io.StringIO()
             report_buffer.write("Relatório ESG EcoSmart - Dados fictícios para demonstração")
