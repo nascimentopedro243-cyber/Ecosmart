@@ -22,13 +22,19 @@ class RouteOptimizer:
 
     def calculate_optimal_route(self, bins_for_collection):
         """
-        Recebe uma lista de lixeiras e retorna a rota otimizada.
+        Recebe uma lista de lixeiras e retorna um dicionário com a rota otimizada e a distância total.
         """
-        # Implemente aqui o algoritmo de otimização de rotas (ex: TSP).
+        # A lógica real de otimização de rotas (TSP) virá aqui.
         
-        # Por enquanto, apenas um placeholder para resolver o erro:
+        # CORREÇÃO FINAL para o TypeError:
+        # Retorna um dicionário com a chave 'total_distance' esperada pelo código chamador.
+        
         print(f"Calculando rota para {len(bins_for_collection)} lixeiras...")
-        return bins_for_collection
+        
+        return {
+            "total_distance": 0.0, # Valor de placeholder
+            "optimized_route": bins_for_collection # A lista de lixeiras
+        }
 
     
     def init_notifications_table(self):
