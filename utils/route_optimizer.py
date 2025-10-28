@@ -12,19 +12,23 @@ class RouteOptimizer:
         # ... inicialização de lógica de otimização de rotas (ex: APIs de mapa)
         pass
 
- def calculate_optimal_route(self, bins_for_collection):
+class RouteOptimizer:
+    def __init__(self, db_path: str = "ecosmart.db"):
+        # Se esta classe for apenas para otimização e não para gerenciar DB,
+        # você pode simplificar o __init__ ou adaptá-lo para a lógica de rotas.
+        self.db_path = db_path
+        # ... inicialização de lógica de otimização de rotas (ex: APIs de mapa)
+        pass
+
+    def calculate_optimal_route(self, bins_for_collection):
         """
-        Recebe uma lista de lixeiras e retorna um dicionário com a rota otimizada,
-        a distância total e o tempo estimado.
+        Recebe uma lista de lixeiras e retorna a rota otimizada.
         """
-        # ... (Sua lógica de otimização real virá aqui) ...
+        # Implemente aqui o algoritmo de otimização de rotas (ex: TSP).
         
-        # CORREÇÃO para resolver o novo KeyError:
-        return {
-            "total_distance": 0.0,
-            "estimated_time": 0, # Adiciona a chave 'estimated_time' com um valor de placeholder
-            "optimized_route": bins_for_collection
-        }
+        # Por enquanto, apenas um placeholder para resolver o erro:
+        print(f"Calculando rota para {len(bins_for_collection)} lixeiras...")
+        return bins_for_collection
 
     
     def init_notifications_table(self):
