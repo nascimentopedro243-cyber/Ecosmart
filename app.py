@@ -61,7 +61,7 @@ def main():
     
     # Sidebar
     with st.sidebar:
-        st.title("🏠 Menu Principal")
+        st.title(" Menu Principal")
         st.markdown("---")
         
         st.selectbox(
@@ -89,7 +89,7 @@ def main():
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        st.markdown("### 🎯 Visão Geral do Sistema")
+        st.markdown("###  Visão Geral do Sistema")
         st.markdown("""
         **EcoSmart** é uma plataforma completa para gestão inteligente de coleta de lixo que integra:
         
@@ -135,7 +135,7 @@ def main():
     
     # Navigation buttons
     st.markdown("---")
-    st.markdown("### 🧭 Navegação Rápida")
+    st.markdown("###  Navegação Rápida")
     
     nav_col1, nav_col2, nav_col3, nav_col4 = st.columns(4)
     
