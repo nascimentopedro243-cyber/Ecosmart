@@ -12,7 +12,7 @@ class RouteOptimizer:
         # ... inicialização de lógica de otimização de rotas (ex: APIs de mapa)
         pass
 
-     def calculate_optimal_route(self, bins_for_collection):
+    def calculate_optimal_route(self, bins_for_collection):
         """
         Recebe uma lista de lixeiras e retorna a rota otimizada.
         """
