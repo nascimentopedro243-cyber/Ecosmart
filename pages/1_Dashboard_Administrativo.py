@@ -88,7 +88,7 @@ st.markdown("---")
 col_left, col_right = st.columns([2, 1])
 
 with col_left:
-    st.subheader("🏠 Status das Lixeiras por Região")
+    st.subheader(" Status das Lixeiras por Região")
 
     # Create bins status dataframe
     bins_df = pd.DataFrame(bins_data)
