@@ -3,7 +3,6 @@ import json
 import random
 from datetime import datetime, timedelta
 from typing import Dict, List, Any
-import os
 
 class Database:
     def __init__(self, db_path: str = "ecosmart.db"):
