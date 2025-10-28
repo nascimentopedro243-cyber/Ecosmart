@@ -1,11 +1,8 @@
 import streamlit as st
 import time
 from datetime import datetime
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from database import Database
-from notifications import NotificationManager
+from data.database import Database
+from utils.notifications import NotificationManager
 
 # Initialize database and notification manager
 @st.cache_resource
@@ -67,7 +64,7 @@ def main():
         st.title("🏠 Menu Principal")
         st.markdown("---")
         
-        user_type = st.selectbox(
+        st.selectbox(
             "Tipo de Usuário:",
             ["Administrador", "Morador/Colaborador", "Operador de Coleta"]
         )
@@ -76,7 +73,7 @@ def main():
         st.markdown("### 📊 Status Geral")
         
         # Get summary statistics
-        bins_data = db.get_bins_summary()
+        db.get_bins_summary()
         total_bins = len(db.get_all_bins())
         full_bins = len([b for b in db.get_all_bins() if b['fill_level'] >= 80])
         
