@@ -20,7 +20,10 @@ class RouteOptimizer:
         
         # Por enquanto, apenas um placeholder para resolver o erro:
         print(f"Calculando rota para {len(bins_for_collection)} lixeiras...")
-        return bins_for_collection
+         return {
+            "total_distance": 0.0, # Valor de placeholder
+            "optimized_route": bins_for_collection # A lista de lixeiras
+        }
     
     def init_notifications_table(self):
         """Initialize notifications table in database"""
