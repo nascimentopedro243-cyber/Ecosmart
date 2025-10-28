@@ -20,20 +20,18 @@ class RouteOptimizer:
         # ... inicialização de lógica de otimização de rotas (ex: APIs de mapa)
         pass
 
-    def calculate_optimal_route(self, bins_for_collection):
+      def calculate_optimal_route(self, bins_for_collection):
         """
-        Recebe uma lista de lixeiras e retorna um dicionário com a rota otimizada e a distância total.
+        Recebe uma lista de lixeiras e retorna um dicionário com a rota otimizada,
+        a distância total e o tempo estimado.
         """
-        # A lógica real de otimização de rotas (TSP) virá aqui.
+        # ... (Sua lógica de otimização real virá aqui) ...
         
-        # CORREÇÃO FINAL para o TypeError:
-        # Retorna um dicionário com a chave 'total_distance' esperada pelo código chamador.
-        
-        print(f"Calculando rota para {len(bins_for_collection)} lixeiras...")
-        
+        # ESTA É A CORREÇÃO FINAL PARA O KEYERROR:
         return {
-            "total_distance": 0.0, # Valor de placeholder
-            "optimized_route": bins_for_collection # A lista de lixeiras
+            "total_distance": 0.0,
+            "estimated_time": 0, # <-- ESSA CHAVE DEVE ESTAR PRESENTE
+            "optimized_route": bins_for_collection
         }
 
     
