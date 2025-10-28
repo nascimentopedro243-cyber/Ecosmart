@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import time
 from data.database import Database
@@ -90,10 +89,10 @@ col_left, col_right = st.columns([2, 1])
 
 with col_left:
     st.subheader("🏠 Status das Lixeiras por Região")
-    
+
     # Create bins status dataframe
     bins_df = pd.DataFrame(bins_data)
-    
+
     # Status distribution chart
     fig_status = px.bar(
         x=['Vazio (0-40%)', 'Médio (40-80%)', 'Cheio (80-100%)'],
@@ -111,23 +110,23 @@ with col_left:
 
 with col_right:
     st.subheader("⚡ Alertas em Tempo Real")
-    
+
     # Critical alerts
     critical_bins = [b for b in bins_data if b['fill_level'] >= 90]
-    
+
     if critical_bins:
         st.error(f"🚨 {len(critical_bins)} lixeiras críticas (>90%)")
         for bin_item in critical_bins[:5]:
             st.markdown(f"• **{bin_item['name']}** - {bin_item['fill_level']}% - {bin_item['location']}")
-    
+
     # Maintenance alerts
     maintenance_bins = [b for b in bins_data if b['status'] == 'maintenance']
     if maintenance_bins:
         st.warning(f"🔧 {len(maintenance_bins)} lixeiras em manutenção")
-    
+
     # Collection efficiency
-    st.info(f"📈 Eficiência de coleta: 87%")
-    st.success(f"♻️ Economia de combustível: 23%")
+    st.info("Eficiência de coleta: 87%")
+    st.success("Economia de combustível: 23%")
 
 # Detailed bins table
 st.markdown("---")
@@ -143,7 +142,7 @@ bins_table_data = []
 for bin_item in filtered_bins:
     status_emoji = "🔴" if bin_item['fill_level'] >= 80 else "🟡" if bin_item['fill_level'] >= 40 else "🟢"
     collection_status = "Urgente" if bin_item['fill_level'] >= 80 else "Programada" if bin_item['fill_level'] >= 40 else "Não Necessária"
-    
+
     bins_table_data.append({
         "Status": status_emoji,
         "ID": bin_item['id'],
@@ -169,19 +168,19 @@ with col_route1:
     if st.button("🔄 Gerar Rota Otimizada", type="primary", use_container_width=True):
         with st.spinner("Calculando rota mais eficiente..."):
             time.sleep(2)  # Simulate processing
-            
+
             # Get bins that need collection
             bins_for_collection = [b for b in bins_data if b['fill_level'] >= 80]
-            
+
             if bins_for_collection:
                 optimized_route = route_optimizer.calculate_optimal_route(bins_for_collection)
-                
-                st.success(f"✅ Rota otimizada gerada!")
+
+                st.success("✅ Rota otimizada gerada!")
                 st.info(f"📍 {len(bins_for_collection)} lixeiras na rota")
                 st.info(f"📏 Distância total: {optimized_route['total_distance']} km")
                 st.info(f"⏱️ Tempo estimado: {optimized_route['estimated_time']} min")
                 st.info(f"⛽ Economia de combustível: {optimized_route['fuel_savings']}%")
-                
+
                 # Store route in session state for map display
                 st.session_state['current_route'] = optimized_route
             else:
@@ -190,15 +189,15 @@ with col_route1:
 with col_route2:
     # Recent collections summary
     st.markdown("### 📊 Resumo de Coletas Recentes")
-    
+
     collections_data = db.get_recent_collections()
     if collections_data:
         total_collected = sum([c['amount'] for c in collections_data])
         avg_efficiency = sum([c['efficiency'] for c in collections_data]) / len(collections_data)
-        
+
         st.metric("Total Coletado (kg)", f"{total_collected:.1f}")
         st.metric("Eficiência Média", f"{avg_efficiency:.1f}%")
-        
+
         # Quick stats
         for collection in collections_data[:3]:
             st.markdown(f"• {collection['date']} - {collection['amount']}kg - {collection['location']}")
@@ -214,8 +213,8 @@ perf_col1, perf_col2 = st.columns(2)
 with perf_col1:
     # Fill level trend over time
     dates = pd.date_range(start=datetime.now()-timedelta(days=7), end=datetime.now(), freq='D')
-    fill_levels = [65, 70, 75, 68, 72, 78, 73]  # Simulated data
-    
+    fill_levels = [65, 70, 75, 68, 72, 78, 73, 76]  # Simulated data (8 points for 8 dates)
+
     fig_trend = px.line(
         x=dates,
         y=fill_levels,
@@ -229,7 +228,7 @@ with perf_col2:
     # Waste type distribution
     waste_types = ['Reciclável', 'Orgânico', 'Comum']
     waste_amounts = [45, 35, 20]  # Simulated data
-    
+
     fig_waste = px.pie(
         values=waste_amounts,
         names=waste_types,
