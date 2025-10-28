@@ -93,7 +93,7 @@ def main():
         st.markdown("""
         **EcoSmart** é uma plataforma completa para gestão inteligente de coleta de lixo que integra:
         
-        - 📍 **Lixeiras IoT** com sensores de nível e GPS
+        -  **Lixeiras IoT** com sensores de nível e GPS
         - 🚛 **Rastreamento de Caminhões** em tempo real  
         - 🎮 **Sistema de Gamificação** para usuários
         - 📊 **Relatórios ESG** e analytics
