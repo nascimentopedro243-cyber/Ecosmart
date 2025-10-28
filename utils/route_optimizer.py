@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 import random
 
-class NotificationManager:
+class RouteOptimizer:
     def __init__(self, db_path: str = "ecosmart.db"):
         self.db_path = db_path
         self.init_notifications_table()
