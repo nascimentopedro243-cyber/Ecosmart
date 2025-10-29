@@ -345,7 +345,7 @@ with col_tips1:
         st.markdown(f"• {tip}")
 
 with col_tips2:
-    st.subheader("🎯 Desafios da Semana")
+    st.subheader("")
     
     challenges = gamification.get_weekly_challenges()
     
