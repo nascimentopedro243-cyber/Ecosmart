@@ -143,7 +143,7 @@ with col_map:
     m = folium.Map(
         location=[center_lat, center_lon], 
         zoom_start=12,
-        tiles=map_style if map_style == 'OpenStreetMap' or map_style == 'Stamen Terrain' else 'Esri World Imagery'
+        tiles='OpenStreetMap' if map_style == 'OpenStreetMap' else 'Stamen Terrain' if map_style == 'Stamen Terrain' else 'Esri World Imagery'
     )
 
     # Add bins to map
