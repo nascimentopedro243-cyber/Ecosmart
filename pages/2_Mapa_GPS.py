@@ -2,18 +2,12 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 import pandas as pd
+import plotly.express as px
 from datetime import datetime
 import time
 import random
 from data.database import Database
 
-
-# Page config
-st.set_page_config(
-    page_title="Mapa GPS - EcoSmart",
-    page_icon="🗺️",
-    layout="wide"
-)
 
 # Initialize services
 @st.cache_resource
@@ -22,36 +16,128 @@ def init_database():
 
 db = init_database()
 
-st.title("🗺️ Mapa GPS - Rastreamento em Tempo Real")
-st.markdown("---")
 
-# Sidebar controls
-st.sidebar.markdown("### 🎛️ Controles do Mapa")
-
-# Map view options
-map_style = st.sidebar.selectbox(
-    "Estilo do Mapa:",
-    ["OpenStreetMap", "Satellite", "Terrain"]
+# --- Page config ---
+st.set_page_config(
+    page_title="Mapa GPS - EcoSmart",
+    page_icon="🗺️",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# Filter options
-show_empty = st.sidebar.checkbox("🟢 Mostrar lixeiras vazias", value=True)
-show_medium = st.sidebar.checkbox("🟡 Mostrar lixeiras médias", value=True)  
-show_full = st.sidebar.checkbox("🔴 Mostrar lixeiras cheias", value=True)
-show_truck = st.sidebar.checkbox("🚛 Mostrar caminhão", value=True)
+# --- Custom CSS for modern styling (reusing the EcoSmart theme) ---
+st.markdown("""
+<style>
+/* Main Header Styling */
+.main-header {
+    font-size: 2.8rem;
+    color: #008080; /* Teal/Verde Água */
+    text-align: left;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    padding-bottom: 0.5rem;
+}
+
+/* Custom Metric Card Styling */
+div[data-testid="stMetric"] {
+    background-color: #F0FFFF; /* Light Cyan */
+    border-left: 5px solid #008080;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+div[data-testid="stMetric"]:hover {
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Section Headers */
+h3 {
+    color: #008080;
+    border-left: 5px solid #008080;
+    padding-left: 10px;
+    margin-top: 1.5rem;
+}
+
+/* Info Boxes in Sidebar/Main Content */
+div[data-testid="stInfo"] {
+    border-left: 5px solid #008080;
+    background-color: #E0FFFF;
+}
+
+/* Button Styling */
+.stButton>button {
+    background-color: #008080;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+.stButton>button:hover {
+    background-color: #006666;
+    color: #FFFFFF;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
-# Real-time tracking toggle
-real_time = st.sidebar.checkbox("⚡ Rastreamento em tempo real", value=True)
+st.markdown('<h1 class="main-header">🗺️ Mapa GPS - Rastreamento em Tempo Real</h1>', unsafe_allow_html=True)
 
-# Get current data
+# --- Data Fetching ---
 bins_data = db.get_all_bins()
 truck_location = db.get_truck_location()
 
-# Main map area
-col1, col2 = st.columns([3, 1])
+# --- Sidebar controls ---
+with st.sidebar:
+    st.markdown("### 🎛️ Configurações e Filtros")
+    
+    # Map view options
+    map_style = st.selectbox(
+        "Estilo do Mapa:",
+        ["OpenStreetMap", "Satellite", "Terrain"]
+    )
+    
+    st.markdown("---")
+    st.markdown("### 🗑️ Filtro de Lixeiras")
+    
+    # Filter options
+    show_empty = st.checkbox("🟢 Mostrar lixeiras vazias (0-40%)", value=True)
+    show_medium = st.checkbox("🟡 Mostrar lixeiras médias (40-80%)", value=True)  
+    show_full = st.checkbox("🔴 Mostrar lixeiras cheias (>80%)", value=True)
+    
+    st.markdown("---")
+    st.markdown("### 🚛 Rastreamento")
+    
+    show_truck = st.checkbox("🚛 Mostrar caminhão", value=True)
+    real_time = st.checkbox("⚡ Rastreamento em tempo real", value=True)
+    
+    st.markdown("---")
+    
+    # Quick actions in sidebar
+    st.markdown("### ⚡ Ações Rápidas")
+    
+    if st.button("🔄 Atualizar Localização", use_container_width=True):
+        with st.spinner("Atualizando..."):
+            time.sleep(1)
+        st.success("✅ Localização atualizada!")
 
-with col1:
+    if st.button("🎯 Centrar no Caminhão", use_container_width=True):
+        if truck_location:
+            st.info("🎯 Mapa centralizado no caminhão")
+        else:
+            st.warning("⚠️ Caminhão não localizado")
+
+
+# --- Main Content Area ---
+col_map, col_stats = st.columns([3, 1])
+
+with col_map:
+    # --- Map Display ---
+    
     # Create base map centered on São Paulo
     center_lat, center_lon = -23.5505, -46.6333
     m = folium.Map(
@@ -116,86 +202,95 @@ with col1:
             icon=folium.Icon(color='blue', icon='road', prefix='fa')
         ).add_to(m)
 
-    
-
     # Display map
-    map_data = st_folium(m, width=700, height=500, returned_objects=["last_object_clicked"])
+    st_folium(m, width=900, height=600, returned_objects=["last_object_clicked"])
 
-with col2:
-    st.subheader("📊 Estatísticas do Mapa")
 
-    # Real-time statistics
+with col_stats:
+    # --- Statistics and Real-time Info ---
+    
+    # Calculate statistics
     total_bins = len(bins_data)
     full_bins = len([b for b in bins_data if b['fill_level'] >= 80])
     medium_bins = len([b for b in bins_data if 40 <= b['fill_level'] < 80])
     empty_bins = total_bins - full_bins - medium_bins
-
-    st.metric("Total Lixeiras", total_bins)
-    st.metric("🔴 Urgente", full_bins) 
-    st.metric("🟡 Médio", medium_bins)
-    st.metric("🟢 Vazio", empty_bins)
+    
+    st.markdown("### 📊 Resumo de Status")
+    
+    # Data for Pie Chart
+    status_counts = {
+        "Urgente (Vermelho)": full_bins,
+        "Médio (Amarelo)": medium_bins,
+        "Vazio (Verde)": empty_bins
+    }
+    status_df = pd.DataFrame(status_counts.items(), columns=['Status', 'Contagem'])
+    
+    # Create Pie Chart
+    fig_pie = px.pie(
+        status_df, 
+        values='Contagem', 
+        names='Status', 
+        title='Proporção de Lixeiras por Status',
+        color='Status',
+        color_discrete_map={
+            "Urgente (Vermelho)": 'red',
+            "Médio (Amarelo)": 'orange',
+            "Vazio (Verde)": 'green'
+        }
+    )
+    fig_pie.update_traces(textposition='inside', textinfo='percent+label')
+    fig_pie.update_layout(height=300, margin=dict(t=50, b=0, l=0, r=0))
+    
+    st.plotly_chart(fig_pie, use_container_width=True)
+    
+st.markdown("---")
+    
+    # Use columns for a compact metric display
+    stat_col1, stat_col2 = st.columns(2)
+    
+    with stat_col1:
+        st.metric("Total Lixeiras", total_bins)
+        st.metric("🟡 Médio", medium_bins)
+    
+    with stat_col2:
+        st.metric("🔴 Urgente", full_bins, delta_color="inverse") 
+        st.metric("🟢 Vazio", empty_bins, delta_color="normal")
 
     st.markdown("---")
 
     # Truck information
     if truck_location:
-        st.subheader("🚛 Status do Caminhão")
-        st.info(f"📍 Lat: {truck_location['coordinates'][0]:.4f}")
-        st.info(f"📍 Lon: {truck_location['coordinates'][1]:.4f}")
-        st.info(f"⛽ Combustível: {truck_location.get('fuel_level', 78)}%")
-        st.info(f"🏃 Velocidade: {truck_location.get('speed', 25)} km/h")
-
-    st.markdown("---")
-
-    # Quick actions
-    st.subheader("⚡ Ações Rápidas")
-
-    if st.button("🔄 Atualizar Localização", use_container_width=True):
-        # Simulate location update
-        with st.spinner("Atualizando..."):
-            time.sleep(1)
-        st.success("✅ Localização atualizada!")
-        # st.rerun()
-
-    if st.button("🎯 Centrar no Caminhão", use_container_width=True):
-        if truck_location:
-            st.info("🎯 Mapa centralizado no caminhão")
-        else:
-            st.warning("⚠️ Caminhão não localizado")
-
+        st.markdown("### 🚛 Status do Caminhão")
+        with st.container(border=True):
+            st.markdown(f"**📍 Localização:** {truck_location['coordinates'][0]:.4f}, {truck_location['coordinates'][1]:.4f}")
+            st.markdown(f"**⛽ Combustível:** {truck_location.get('fuel_level', 78)}%")
+            st.markdown(f"**🏃 Velocidade:** {truck_location.get('speed', 25)} km/h")
+            if real_time:
+                st.success("✅ Rastreamento Ativo")
+            else:
+                st.warning("⏸️ Rastreamento Pausado")
     
+    st.markdown("---")
+    
+    # Real-time updates section
+    st.markdown("### ⚡ Atualizações Recentes")
+    
+    with st.container(border=True):
+        # Recent location updates
+        recent_updates = [
+            "🚛 Caminhão chegou na Rua das Flores, 123",
+            "🗑️ Lixeira #15 enchimento 85% - coleta necessária", 
+            "✅ Coleta realizada na Av. Paulista, 456",
+            "🔋 Lixeira #8 bateria em 15% - manutenção necessária",
+        ]
+
+        for update in recent_updates:
+            st.markdown(f"• {update}")
+            
+        st.markdown(f"**🕐 Última Atualização:** {datetime.now().strftime('%H:%M:%S')}")
 
 
-
-# Real-time updates section
-st.markdown("---")
-col_time1, col_time2 = st.columns([2, 1])
-
-with col_time1:
-    st.subheader("⚡ Atualizações em Tempo Real")
-
-    # Recent location updates
-    recent_updates = [
-        "🚛 Caminhão chegou na Rua das Flores, 123",
-        "🗑️ Lixeira #15 enchimento 85% - coleta necessária", 
-        "✅ Coleta realizada na Av. Paulista, 456",
-        "🔋 Lixeira #8 bateria em 15% - manutenção necessária",
-           
-    ]
-
-    for update in recent_updates:
-        st.markdown(f"• {update}")
-
-with col_time2:
-    st.markdown("### ⏰ Status Atual")
-    st.markdown(f"🕐 **{datetime.now().strftime('%H:%M:%S')}**")
-
-    if real_time:
-        st.success("✅ Rastreamento ativo")
-    else:
-        st.warning("⏸️ Rastreamento pausado")
-
-# Auto-refresh mechanism
+# --- Auto-refresh mechanism ---
 if real_time:
     time.sleep(2)
     # Simulate random updates to truck location
@@ -210,4 +305,4 @@ if real_time:
             truck_location['coordinates'][1] + lon_offset
         )
 
-    # st.rerun()
+    st.rerun()
