@@ -291,18 +291,6 @@ with col_stats:
 
 
 # --- Auto-refresh mechanism ---
+# Apenas simula um pequeno tempo de espera para evitar loops de atualização muito rápidos
 if real_time:
-    time.sleep(2)
-    # Simulate random updates to truck location
-    if truck_location:
-        # Small random movement
-        lat_offset = random.uniform(-0.001, 0.001)
-        lon_offset = random.uniform(-0.001, 0.001)
-
-        # Update truck position in database
-        db.update_truck_location(
-            truck_location['coordinates'][0] + lat_offset,
-            truck_location['coordinates'][1] + lon_offset
-        )
-
-    st.rerun()
+    time.sleep(1)
