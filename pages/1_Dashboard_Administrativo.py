@@ -4,7 +4,7 @@ import plotly.express as px
 from datetime import datetime, timedelta
 import time
 from data.database import Database
-from utils.route_optimizer import RouteOptimizer
+
 
 # Page config
 st.set_page_config(
@@ -18,12 +18,10 @@ st.set_page_config(
 def init_database():
     return Database()
 
-@st.cache_resource
-def init_route_optimizer():
-    return RouteOptimizer()
+
 
 db = init_database()
-route_optimizer = init_route_optimizer()
+
 
 st.title("📊 Dashboard Administrativo")
 st.markdown("---")
@@ -158,51 +156,22 @@ if bins_table_data:
     bins_df_display = pd.DataFrame(bins_table_data)
     st.dataframe(bins_df_display, use_container_width=True, hide_index=True)
 
-# Route optimization section
-st.markdown("---")
-st.subheader("")
+# Recent collections summary
+st.markdown("### 📊 Resumo de Coletas Recentes")
 
-col_route1, col_route2 = st.columns([1, 1])
+collections_data = db.get_recent_collections()
+if collections_data:
+    total_collected = sum([c['amount'] for c in collections_data])
+    avg_efficiency = sum([c['efficiency'] for c in collections_data]) / len(collections_data)
 
-with col_route1:
-    if st.button("🔄 Gerar Rota Otimizada", type="primary", use_container_width=True):
-        with st.spinner("Calculando rota mais eficiente..."):
-            time.sleep(2)  # Simulate processing
+    st.metric("Total Coletado (kg)", f"{total_collected:.1f}")
+    st.metric("Eficiência Média", f"{avg_efficiency:.1f}%")
 
-            # Get bins that need collection
-            bins_for_collection = [b for b in bins_data if b['fill_level'] >= 80]
-
-            if bins_for_collection:
-                optimized_route = route_optimizer.calculate_optimal_route(bins_for_collection)
-
-                st.success("✅ Rota otimizada gerada!")
-                st.info(f"📍 {len(bins_for_collection)} lixeiras na rota")
-                st.info(f"📏 Distância total: {optimized_route['total_distance']} km")
-                st.info(f"⏱️ Tempo estimado: {optimized_route['estimated_time']} min")
-                st.info(f"⛽ Economia de combustível: {optimized_route['fuel_savings']}%")
-
-                # Store route in session state for map display
-                st.session_state['current_route'] = optimized_route
-            else:
-                st.info("ℹ️ Não há lixeiras que necessitam coleta no momento.")
-
-with col_route2:
-    # Recent collections summary
-    st.markdown("### 📊 Resumo de Coletas Recentes")
-
-    collections_data = db.get_recent_collections()
-    if collections_data:
-        total_collected = sum([c['amount'] for c in collections_data])
-        avg_efficiency = sum([c['efficiency'] for c in collections_data]) / len(collections_data)
-
-        st.metric("Total Coletado (kg)", f"{total_collected:.1f}")
-        st.metric("Eficiência Média", f"{avg_efficiency:.1f}%")
-
-        # Quick stats
-        for collection in collections_data[:3]:
-            st.markdown(f"• {collection['date']} - {collection['amount']}kg - {collection['location']}")
-    else:
-        st.info("Nenhuma coleta recente registrada.")
+    # Quick stats
+    for collection in collections_data[:3]:
+        st.markdown(f"• {collection['date']} - {collection['amount']}kg - {collection['location']}")
+else:
+    st.info("Nenhuma coleta recente registrada.")
 
 # Performance indicators
 st.markdown("---")
