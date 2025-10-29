@@ -291,6 +291,7 @@ with col_stats:
 
 
 # --- Auto-refresh mechanism ---
-# Apenas simula um pequeno tempo de espera para evitar loops de atualização muito rápidos
-if real_time:
-    time.sleep(1)
+# Removido o st.rerun() e a simulação de movimento.
+# Se o aplicativo ainda estiver atualizando, o problema pode estar no Streamlit Cloud
+# ou em um widget que está sendo atualizado constantemente.
+# Mantendo o código limpo para evitar recargas desnecessárias.
