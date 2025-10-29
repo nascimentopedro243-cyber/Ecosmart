@@ -98,7 +98,7 @@ with st.sidebar:
     # Map view options
     map_style = st.selectbox(
         "Estilo do Mapa:",
-        ["OpenStreetMap", "Stamen Terrain", "Esri World Imagery (Satellite)"]
+        ["OpenStreetMap","Esri World Imagery (Satellite)"]
     )
     
     st.markdown("---")
