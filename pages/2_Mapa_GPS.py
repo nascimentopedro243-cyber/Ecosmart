@@ -98,7 +98,7 @@ with st.sidebar:
     # Map view options
     map_style = st.selectbox(
         "Estilo do Mapa:",
-        ["OpenStreetMap", "Satellite", "Terrain"]
+        ["OpenStreetMap", "Esri World Imagery (Satellite)", "Stamen Terrain"]
     )
     
     st.markdown("---")
@@ -143,7 +143,7 @@ with col_map:
     m = folium.Map(
         location=[center_lat, center_lon], 
         zoom_start=12,
-        tiles='OpenStreetMap' if map_style == 'OpenStreetMap' else 'Stamen Terrain'
+        tiles='OpenStreetMap' if map_style == 'OpenStreetMap' else 'Esri World Imagery' if map_style == 'Esri World Imagery (Satellite)' else 'Stamen Terrain'
     )
 
     # Add bins to map
