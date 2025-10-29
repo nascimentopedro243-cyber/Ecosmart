@@ -243,7 +243,7 @@ with col_stats:
     
     st.plotly_chart(fig_pie, use_container_width=True)
     
-st.markdown("---")
+    st.markdown("---")
     
     # Use columns for a compact metric display
     stat_col1, stat_col2 = st.columns(2)
