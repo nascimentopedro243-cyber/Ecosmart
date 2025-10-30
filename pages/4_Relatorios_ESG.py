@@ -265,8 +265,6 @@ if report_type in ["Completo", "Governança"]:
         st.markdown("### 💰 Transparência Financeira")
         
         financial_data = {
-            'Investimento Total (R$)': f"R$ {esg_data['total_investment']:,.2f}",
-            'Economia Operacional (R$)': f"R$ {esg_data['operational_savings']:,.2f}",
             'ROI Ambiental': f"{esg_data['environmental_roi']:.1f}%",
             'Custo por Tonelada': f"R$ {esg_data['cost_per_ton']:.2f}"
         }
